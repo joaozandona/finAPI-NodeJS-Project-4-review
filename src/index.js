@@ -21,7 +21,7 @@ app.post('/account', (request, response) => {
     statement: []
   });
 
-  console.log(costumers)
+  console.log(costumers);
 
   return response.status(201).send()
 
