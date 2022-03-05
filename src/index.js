@@ -11,7 +11,7 @@ app.post('/account', (request, response) => {
   
   const { cpf, name }  = request.body;
 
-  const costumerAlreadyExists = customers.some((costumer) => costumer.cpf === cpf);
+  const customerAlreadyExists = customers.some((customer) => customer.cpf === cpf);
 
   customers.push({
     cpf,
@@ -20,8 +20,8 @@ app.post('/account', (request, response) => {
     statement: []
   });
 
-  if(costumerAlreadyExists) {
-    return response.status(400).json({error: "Costumer already exists!"});
+  if(customerAlreadyExists) {
+    return response.status(400).json({error: "Customer already exists!"});
   }
 
   console.log(customers);
@@ -30,12 +30,17 @@ app.post('/account', (request, response) => {
 
 });
 
-app.get('/statement/:cpf', (request, response) => {
-  const { cpf } = request.params;
+app.get('/statement/', (request, response) => {
   
-  const costumer = customers.find(customer => customer.cpf === cpf);
+  const { cpf } = request.headers;
+  
+  const customer = customers.find(customer => customer.cpf === cpf);
 
-    return response.json(costumer.statement);
+  if(!customer) {
+    return response.status(400).json({error: 'Customer not found!'})
+  }
+
+  return response.json(customer.statement);
 
 });
 
