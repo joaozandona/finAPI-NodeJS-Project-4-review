@@ -19,8 +19,8 @@ function verifyIfExistsAccountCPF(request, response, next){
   return next();
 
 }
-
-  function getBalance(statement) {
+ 
+function getBalance(statement) {
     console.log(statement)
     const balance = statement.reduce((acc, operation) => {
       console.log('test')
@@ -140,6 +140,15 @@ app.delete('/account', verifyIfExistsAccountCPF, (request, response) => {
   customers.splice(customer, 1);
 
   return response.status(200).json(customers);
+
+});
+
+app.get('/balance', verifyIfExistsAccountCPF, (request, response) =>{
+  const { customer } = request;
+
+  const balance = getBalance(customer.statement);
+
+  return response.json(balance)
 
 });
 
