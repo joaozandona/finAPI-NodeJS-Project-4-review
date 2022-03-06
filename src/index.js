@@ -7,7 +7,7 @@ app.use(express.json())
 
 const customers = [];
 
-function verifyIfExistsAcoountCPF(request, response, next){
+function verifyIfExistsAccountCPF(request, response, next){
   
   const { cpf } = request.headers;
   const customer = customers.find(customer => customer.cpf === cpf);
@@ -57,7 +57,7 @@ app.post('/account', (request, response) => {
 
 });
 
-app.get('/statement', verifyIfExistsAcoountCPF, (request, response) => {
+app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
   
   const { customer } = request;
 
@@ -65,7 +65,7 @@ app.get('/statement', verifyIfExistsAcoountCPF, (request, response) => {
 
 });
 
-app.post('/deposit', verifyIfExistsAcoountCPF, (request, response)=>{
+app.post('/deposit', verifyIfExistsAccountCPF, (request, response)=>{
 
   const { description, amount } = request.body
 
@@ -84,7 +84,7 @@ app.post('/deposit', verifyIfExistsAcoountCPF, (request, response)=>{
 
 });
 
-app.post('/withdraw', verifyIfExistsAcoountCPF, (request, response)=>{
+app.post('/withdraw', verifyIfExistsAccountCPF, (request, response)=>{
   const { amount } = request.body;
   const { customer } = request;
 
@@ -103,6 +103,18 @@ app.post('/withdraw', verifyIfExistsAcoountCPF, (request, response)=>{
   customer.statement.push(statementOperation);
 
   return response.status(201).send();
+
+});
+
+app.get('/statement/date', verifyIfExistsAccountCPF, (request, response) =>{
+  const { customer } = request;
+  const { date } = request.query;
+
+  const dateFormat = new Date(date + ' 00:00');
+
+  const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString());
+
+  return response.json( statement );
 
 });
 
